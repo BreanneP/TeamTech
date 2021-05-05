@@ -30,13 +30,12 @@ void loop() {
 
   //Read the value of the level sensor
   int levelValue = digitalRead(levelSensor);
-  int lValue = levelValue / 4;
-  Serial.print("lValue: ");
-  Serial.print(lValue);
+  Serial.print("levelValue: ");
+  Serial.print(levelValue);
   Serial.println();
   
   //Create data packet for CAN message
-  unsigned char canMsg[8] = {tValue, lValue, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  unsigned char canMsg[8] = {tValue, levelValue, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   // send data:  id = 0x123, standard frame, data len = 8, stmp: data buf
   CAN.sendMsgBuf(0x07B, 0, 8, canMsg);  
   delay(100);
