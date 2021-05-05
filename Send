@@ -4,10 +4,8 @@
 int levelSensor = 0;
 int tempSensor = A2;
 
-void setup() {
-  // put your setup code here, to run once:
-  
-  while(!Serial); //is Serial ready to be used
+void setup() {  
+  while(!Serial); //Serial is not ready to be used
   
   Serial.begin(9600);
   // init can bus, baudrate: 100k
@@ -19,8 +17,6 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
   //Read the value of the temperature sensor
   int tempValue = analogRead(tempSensor); 
   int tValue = tempValue / 4; //Each CAN bus byte can store a value between 0-255.
