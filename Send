@@ -1,0 +1,44 @@
+#include <mcp_can.h>
+#include <SPI.h>
+
+int levelSensor = 0;
+int tempSensor = A2;
+
+void setup() {
+  // put your setup code here, to run once:
+  
+  while(!Serial); //is Serial ready to be used
+  
+  Serial.begin(9600);
+  // init can bus, baudrate: 100k
+  if(CAN.begin(CAN_100KBPS) ==CAN_OK) Serial.print("can init ok!!\r\n");
+  else Serial.print("Can init fail!!\r\n");
+
+  pinMode(levelSensor, INPUT);
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  
+  //Read the value of the temperature sensor
+  int tempValue = analogRead(tempSensor); 
+  int tValue = tempValue / 4; //Each CAN bus byte can store a value between 0-255.
+  Serial.print("tValue: ");
+  Serial.print(tValue);
+  Serial.println();
+
+  //Read the value of the level sensor
+  int levelValue = digitalRead(levelSensor);
+  int lValue = levelValue / 4;
+  Serial.print("lValue: ");
+  Serial.print(lValue);
+  Serial.println();
+  
+  //Create data packet for CAN message
+  unsigned char canMsg[8] = {tValue, lValue, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  // send data:  id = 0x123, standard frame, data len = 8, stmp: data buf
+  CAN.sendMsgBuf(0x07B, 0, 8, canMsg);  
+  delay(100);
+
+}
