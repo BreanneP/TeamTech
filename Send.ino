@@ -32,7 +32,6 @@ void loop() {
 
   //get the level value
   int levelValue = digitalRead(levelSensor);
-  levelValue = map(levelValue, 0, 1023, 0, 255); //maps the reading to 0 to 255
   canMsg.data[1] = levelValue; //adds the levelValue to the CAN message
 
   //send the message
