@@ -1,39 +1,43 @@
-#include <mcp_can.h>
-#include <SPI.h>
+#include <can.h>
+#include <mcp2515.h>
 
-int levelSensor = 0;
-int tempSensor = A2;
+//initialize the pins
+const int tempPin = A0;
+const int levelSensor = 0;
 
-void setup() {  
-  while(!Serial); //Serial is not ready to be used
-  
+//set up the data structure for sending the data
+struct can_frame canMsg;
+
+//create an instance of MCP2515 class
+MCP2515 mcp2515(10);
+
+void setup() {
   Serial.begin(9600);
-  // init can bus, baudrate: 100k
-  if(CAN.begin(CAN_100KBPS) ==CAN_OK) Serial.print("can init ok!!\r\n");
-  else Serial.print("Can init fail!!\r\n");
+  pinMode(levelSensor, INPUT); //set the levelSensor as an input pin
 
-  pinMode(levelSensor, INPUT);
+  mcp2515.reset();
+  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
+  mcp2515.setNormalMode();
+
+  canMsg.can_id = 0x036; //CAN id as 0x036
+  canMsg.can_dlc = 2; //CAN data length as 2 bytes
 
 }
 
 void loop() {
-  //Read the value of the temperature sensor
-  int tempValue = analogRead(tempSensor); 
-  int tValue = tempValue / 4; //Each CAN bus byte can store a value between 0-255.
-  Serial.print("tValue: ");
-  Serial.print(tValue);
-  Serial.println();
+  //get the temperature value
+  int tempValue = analogRead(tempPin);
+  tempValue = map(tempValue, 0, 1023, 0, 255); //maps the reading to 0 to 255
+  canMsg.data[0] = tempValue; //adds the tempValue to the CAN message
 
-  //Read the value of the level sensor
+  //get the level value
   int levelValue = digitalRead(levelSensor);
-  Serial.print("levelValue: ");
-  Serial.print(levelValue);
-  Serial.println();
-  
-  //Create data packet for CAN message
-  unsigned char canMsg[8] = {tValue, levelValue, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  // send data:  id = 0x123, standard frame, data len = 8, stmp: data buf
-  CAN.sendMsgBuf(0x07B, 0, 8, canMsg);  
-  delay(100);
+  levelValue = map(levelValue, 0, 1023, 0, 255); //maps the reading to 0 to 255
+  canMsg.data[1] = levelValue; //adds the levelValue to the CAN message
+
+  //send the message
+  mcp2515.sendMessage(&canMsg);
+    
+  delay(200);
 
 }
