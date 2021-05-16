@@ -7,6 +7,10 @@ struct can_frame canMsg;
 //create an instance of MCP2515 class
 MCP2515 mcp2515(10);
 
+//initialize the pins
+const int tempPin = A0;
+const int levelSensor = 0;
+
 void setup() {
   Serial.begin(9600);
 
@@ -19,16 +23,20 @@ void setup() {
 }
 
 void loop() {
-  mcp2515.readMessage(&canMsg);
-
   //read the temperature value
-  float voltage = (canMsg.data[0] / 256.0) * 5.0;
-  float tempC = (voltage - 0.5) * 100;
-  float tempF = ((tempC * 9) / 5.0) + 32.0;
-  Serial.print("temperature is ");
-  Serial.print(tempF);
-  Serial.println("\n");
+  float tempValue = analogRead(tempPin);
+  
+  //Analog Reading to Voltage 
+  float voltage = (tempValue / 1024. ) * 5.;
 
+  //Voltage to Celsius
+  float tempC = (voltage - 0.5) * 100; 
+  
+  //Celsius to Farhenheit
+  float tempF = ((tempC * 9.0) / 5.0 ) + 32.0 ;  
+  
+  mcp2515.readMessage(&canMsg);
+  
   //read the level value
   if(canMsg.data[1] == 1)
     Serial.print("The level is okay!");
