@@ -11,6 +11,10 @@ MCP2515 mcp2515(10);
 const int tempPin = A1;
 const int levelSensor = 10;
 
+//limits for the temperature
+const int highTemp = 50;
+const int lowTemp = -25;
+
 void setup() {
   Serial.begin(9600);
 
