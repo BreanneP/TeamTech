@@ -22,7 +22,8 @@ void setup() {
   Serial.begin(9600);
   
   lcd.begin(16, 2);
-  lcd.print("F"); // printing the temperature from TMP36 in farenheit
+  lcd.print("Temp = "); // printing the temperature from TMP36 in farenheit
+  lcd.print(tempF);
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
