@@ -8,8 +8,8 @@ struct can_frame canMsg;
 MCP2515 mcp2515(10);
 
 //initialize the pins
-const int tempPin = A0;
-const int levelSensor = 0;
+const int tempPin = A1;
+const int levelSensor = 10;
 
 void setup() {
   Serial.begin(9600);
@@ -35,13 +35,9 @@ void loop() {
   //Celsius to Farhenheit
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0 ;  
   
+  //read the level sensor
+  int levelValue = digitalRead(levelSensor);
+  
   mcp2515.readMessage(&canMsg);
-  
-  //read the level value
-  if(canMsg.data[1] == 1)
-    Serial.print("The level is okay!");
-  else
-    Serial.print("The level is not okay!");
-  
   delay(200);
 }
