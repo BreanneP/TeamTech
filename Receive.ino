@@ -1,5 +1,8 @@
 #include <can.h>
 #include <mcp2515.h>
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(13, 12, 11, 10, 9, 8); // 
 
 //set up the data structure for reading the data
 struct can_frame canMsg;
@@ -17,6 +20,9 @@ const int lowTemp = -25;
 
 void setup() {
   Serial.begin(9600);
+  
+  lcd.begin(16, 2);
+  lcd.print("F"); // printing the temperature from TMP36 in farenheit
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
