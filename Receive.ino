@@ -24,13 +24,15 @@ void setup() {
   lcd.begin(16, 2);
   lcd.print("Temp = "); // printing the temperature from TMP36 in farenheit
   lcd.print(tempF);
+  
+  pinMode(levelSensor, INPUT); //set the levelSensor as an input pin
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
   mcp2515.setNormalMode();
 
   canMsg.can_id = 0x036; //CAN id as 0x036
-  canMsg.can_dlc = 1; //CAN data length as 2 bytes
+  canMsg.can_dlc = 1; //CAN data length as 1 byte
 }
 
 void loop() {
