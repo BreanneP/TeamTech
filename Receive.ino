@@ -19,7 +19,7 @@ void setup() {
   mcp2515.setNormalMode();
 
   canMsg.can_id = 0x036; //CAN id as 0x036
-  canMsg.can_dlc = 2; //CAN data length as 2 bytes
+  canMsg.can_dlc = 1; //CAN data length as 2 bytes
 }
 
 void loop() {
