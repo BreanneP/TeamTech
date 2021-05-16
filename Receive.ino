@@ -13,6 +13,8 @@ MCP2515 mcp2515(10);
 //initialize the pins
 const int tempPin = A1;
 const int levelSensor = 10;
+const int yellowLED = 13;
+const int redLED = 9;
 
 //limits for the temperature
 const int highTemp = 50;
@@ -22,10 +24,10 @@ void setup() {
   Serial.begin(9600);
   
   lcd.begin(16, 2);
-  lcd.print("Temp = "); // printing the temperature from TMP36 in farenheit
-  lcd.print(tempF);
   
   pinMode(levelSensor, INPUT); //set the levelSensor as an input pin
+  pinMode(yellowLED, OUTPUT); //set the yellowLED as an output pin
+  pinMode(redLED, OUTPUT); //set the redLED as an output pin
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
@@ -50,6 +52,9 @@ void loop() {
   
   //read the level sensor
   int levelValue = digitalRead(levelSensor);
+  
+  lcd.print("Temp = "); // printing the temperature from TMP36 in farenheit
+  lcd.print(tempF);
   
   mcp2515.readMessage(&canMsg);
   delay(200);
