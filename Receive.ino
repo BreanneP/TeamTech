@@ -2,7 +2,7 @@
 #include <mcp2515.h>
 #include <LiquidCrystal.h>
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
+LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
 
 //set up the data structure for reading the data
 struct can_frame canMsg1;
@@ -42,10 +42,6 @@ void setup() {
 }
 
 void loop() {
-  lcd.setCursor(1, 0);
-  lcd.print("hello");
-
-  
   //read the temperature value
   float tempValue = analogRead(tempPin);
   
@@ -58,13 +54,13 @@ void loop() {
   int lowLevel = digitalRead(levelSensor1);
   int highLevel = digitalRead(levelSensor2);
 
-  Serial.print("Low level value "); // I have a question about this portion of code --> there is no sp. output value for the level sensor what is printing then? 
-  Serial.print(lowLevel);
-  Serial.print("\n");
+//   Serial.print("Low level value "); // I have a question about this portion of code --> there is no sp. output value for the level sensor what is printing then? 
+//   Serial.print(lowLevel);
+//   Serial.print("\n");
 
-  Serial.print("The high level value " );
-  Serial.print(highLevel);
-  Serial.print("\n");
+//   Serial.print("The high level value " );
+//   Serial.print(highLevel);
+//   Serial.print("\n");
 
   //print out temperature reading
   lcd.setCursor(0, 0);
