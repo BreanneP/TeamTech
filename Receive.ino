@@ -29,10 +29,12 @@ void setup() {
   
   lcd.print("working");
   
-  pinMode(levelSensor1, INPUT); //set the levelSensor as an input pin
+  pinMode(levelSensor1, INPUT);
+  pinMode(redLED, OUTPUT);
+  digitalWrite(redLED, LOW);
   pinMode(levelSensor2, INPUT);
-  pinMode(yellowLED, OUTPUT); //set the yellowLED as an output pin
-  pinMode(redLED, OUTPUT); //set the redLED as an output pin
+  pinMode(yellowLED, OUTPUT);
+  digitalWrite(yellowLED, LOW);
 
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
@@ -40,6 +42,7 @@ void setup() {
 
 }
 
+  
 void loop() {
   //read the temperature value
   float tempValue = analogRead(tempPin);
@@ -52,14 +55,18 @@ void loop() {
   //read the level sensors
   int lowLevel = digitalRead(levelSensor1);
   int highLevel = digitalRead(levelSensor2);
-
-//   Serial.print("Low level value "); // I have a question about this portion of code --> there is no sp. output value for the level sensor what is printing then? 
-//   Serial.print(lowLevel);
-//   Serial.print("\n");
-
-//   Serial.print("The high level value " );
-//   Serial.print(highLevel);
-//   Serial.print("\n");
+  
+  int isDry = digitalRead(levelSensor1);
+  if ( isDry )
+    digitalWrite(redLED, LOW);
+  else
+    digitalWrite(redLED, HIGH);
+    
+  int isDry = digitalRead(levelSensor2);
+  if ( isDry )
+    digitalWrite(yellowLED, HIGH);
+  else
+    digitalWrite(yellowLED, LOW);
 
   //print out temperature reading
   lcd.setCursor(0, 0);
