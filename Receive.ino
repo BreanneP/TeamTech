@@ -78,37 +78,37 @@ void loop() {
     lcd.print("Level not okay");
 
   //read the CAN messages 
-  if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
-    if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-     int vValue1 = canMsg1.data[0];
-     int vValue2 = canMsg1.data[1];
-     int dValue = canMsg1.data[2..3];
-     int dcValue = canMsg2.data[6..7];
+//   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
+//     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
+//      int vValue1 = canMsg1.data[0];
+//      int vValue2 = canMsg1.data[1];
+//      int dValue = canMsg1.data[2..3];
+//      int dcValue = canMsg2.data[6..7];
 
-     float viscosity = vValue * 0.015625;
-     float density = dValue * 0.00003052;
-     float dielectric = dcValue * 0.00012207;
+//      float viscosity = vValue * 0.015625;
+//      float density = dValue * 0.00003052;
+//      float dielectric = dcValue * 0.00012207;
      
-     lcd.setCursor(16, 0);
-     lcd.print("Viscosity: ");
-     lcd.print(viscosity);
-     delay(200);
-    }
-  }
+//      lcd.setCursor(16, 0);
+//      lcd.print("Viscosity: ");
+//      lcd.print(viscosity);
+//      delay(200);
+//     }
+//   }
 
-  if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
-    if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
-     int tValue = canMsg1.data[4..5];
-     int temp = tValue[2..3];
+//   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
+//     if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
+//      int tValue = canMsg1.data[4..5];
+//      int temp = tValue[2..3];
 
-     float celsius = (0.3125 * temp) - 273;
-     float fahrenheit = ((celsius * 9.0) / 5.0 ) + 32.0 ;  
+//      float celsius = (0.3125 * temp) - 273;
+//      float fahrenheit = ((celsius * 9.0) / 5.0 ) + 32.0 ;  
      
-     lcd.print("Temperature: ");
-     lcd.print(fahrenheit);
-     delay(200);
-    }
-  }
+//      lcd.print("Temperature: ");
+//      lcd.print(fahrenheit);
+//      delay(200);
+//     }
+//   }
   
   delay(200);
 }
