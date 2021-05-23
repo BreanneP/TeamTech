@@ -69,7 +69,6 @@ void loop() {
   lcd.print(" F ");
   
   delay(1000);
-  lcd.clear(); // clears the temperature reading to show other readings
     
   //print out level sensor reading
   if(lowLevel == 1 && highLevel == 0)
