@@ -57,14 +57,10 @@ void loop() {
   
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
-    digitalWrite(LED_PIN_COLD, HIGH);
-    digitalWrite(LED_PIN_HOT, LOW);
-    Serial.println(" It's Cold.");
+    lcd.print(" It's Cold.");
     }
   else if (tempF >= highTemp) { 
-    digitalWrite(LED_PIN_COLD, LOW);
-    digitalWrite(LED_PIN_HOT, HIGH);
-    Serial.println(" It's Hot.");
+    lcd.print(" It's Hot.");
   }
 
   //read the top level sensor
