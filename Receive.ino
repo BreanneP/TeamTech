@@ -52,26 +52,25 @@ void loop() {
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
   
+  //print out temperature reading
+  lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
+  lcd.print(tempF);
+  lcd.print(" F ");
+  
+  //read the top level sensor
   int isDryTop = digitalRead(levelTop);
   if ( isDryTop )
     digitalWrite(redLED, LOW);
   else
     digitalWrite(redLED, HIGH);
     
+  //read the bottom level sensor
   int isDryBottom = digitalRead(levelBottom);
   if ( isDryBottom )
     digitalWrite(yellowLED, HIGH);
   else
     digitalWrite(yellowLED, LOW);
-
-  //print out temperature reading
-  lcd.setCursor(0, 0);
-  lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
-  lcd.print(tempF);
-  lcd.print(" F ");
-  
-  delay(1000);
-    
+      
   //print out level sensor reading
   if(!isDryBottom && isDryTop)
     lcd.print("Level okay");
