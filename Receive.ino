@@ -18,6 +18,7 @@ const int levelTop = 8;
 const int levelBottom = 10;
 const int yellowLED = 13;
 const int redLED = 9;
+const int blueLED = 7;
 
 //limits for the temperature in celcius
 const int highTemp = 50;
@@ -50,17 +51,19 @@ void loop() {
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
   
-  //print out temperature reading
-  lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
-  lcd.print(tempF);
-  lcd.print(" F ");
-  
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
+    digitalWrite(blueLED, HIGH);
     lcd.print(" It's Cold.");
     }
   else if (tempF > highTemp) { 
+    digitalWrite(blueLED, HIGH);
     lcd.print(" It's Hot.");
+  }
+  else {
+    lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
+    lcd.print(tempF);
+    lcd.print(" F ");
   }
 
   //read the top level sensor
