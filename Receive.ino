@@ -26,9 +26,7 @@ const int lowTemp = -25;
 void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2);
-  
-  lcd.print("working");
-  
+    
   pinMode(levelTop, INPUT);
   pinMode(redLED, OUTPUT);
   digitalWrite(redLED, LOW);
