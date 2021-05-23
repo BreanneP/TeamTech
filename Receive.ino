@@ -27,7 +27,6 @@ void setup() {
   Serial.begin(9600);
   lcd.begin(16, 2);
   
-  lcd.setCursor(0, 0);
   lcd.print("working");
   
   pinMode(levelSensor1, INPUT); //set the levelSensor as an input pin
@@ -64,17 +63,17 @@ void loop() {
 
   //print out temperature reading
   lcd.setCursor(0, 0);
-  lcd.print("Temperature: "); // printing the temperature from TMP36 in farenheit
+  lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
   lcd.print(tempF);
   lcd.print(" F ");
   
   delay(1000);
     
   //print out level sensor reading
-  if(lowLevel == 1 && highLevel == 0)
-    lcd.print("Level okay");
-  else
-    lcd.print("Level not okay");
+//   if(lowLevel == 1 && highLevel == 0)
+//     lcd.print("Level okay");
+//   else
+//     lcd.print("Level not okay");
 
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
