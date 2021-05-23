@@ -59,7 +59,7 @@ void loop() {
   if (tempF < lowTemp) { 
     lcd.print(" It's Cold.");
     }
-  else if (tempF >= highTemp) { 
+  else if (tempF > highTemp) { 
     lcd.print(" It's Hot.");
   }
 
