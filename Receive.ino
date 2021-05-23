@@ -14,8 +14,8 @@ MCP2515 mcp2515(10);
 
 //initialize the pins
 const int tempPin = A1;
-const int levelSensor1 = 8;
-const int levelSensor2 = 10;
+const int levelTop = 8;
+const int levelBottom = 10;
 const int yellowLED = 13;
 const int redLED = 9;
 
@@ -29,10 +29,10 @@ void setup() {
   
   lcd.print("working");
   
-  pinMode(levelSensor1, INPUT);
+  pinMode(levelTop, INPUT);
   pinMode(redLED, OUTPUT);
   digitalWrite(redLED, LOW);
-  pinMode(levelSensor2, INPUT);
+  pinMode(levelBottom, INPUT);
   pinMode(yellowLED, OUTPUT);
   digitalWrite(yellowLED, LOW);
 
@@ -52,18 +52,14 @@ void loop() {
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
   
-  //read the level sensors
-  int lowLevel = digitalRead(levelSensor1);
-  int highLevel = digitalRead(levelSensor2);
-  
-  int isDry = digitalRead(levelSensor1);
-  if ( isDry )
+  int isDryTop = digitalRead(levelTop);
+  if ( isDryTop )
     digitalWrite(redLED, LOW);
   else
     digitalWrite(redLED, HIGH);
     
-  int isDry = digitalRead(levelSensor2);
-  if ( isDry )
+  int isDryBottom = digitalRead(levelBottom);
+  if ( isDryBottom )
     digitalWrite(yellowLED, HIGH);
   else
     digitalWrite(yellowLED, LOW);
