@@ -55,7 +55,7 @@ void loop() {
   if (tempF < lowTemp) { 
     digitalWrite(blueLED, HIGH);
     lcd.print(" It's Cold.");
-    }
+  }
   else if (tempF > highTemp) { 
     digitalWrite(blueLED, HIGH);
     lcd.print(" It's Hot.");
