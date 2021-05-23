@@ -19,7 +19,7 @@ const int levelSensor2 = 10;
 const int yellowLED = 13;
 const int redLED = 9;
 
-//limits for the temperature
+//limits for the temperature in celcius
 const int highTemp = 50;
 const int lowTemp = -25;
 
@@ -70,6 +70,10 @@ void loop() {
   lcd.setCursor(0, 0);
   lcd.print("Temperature: "); // printing the temperature from TMP36 in farenheit
   lcd.print(tempF);
+  lcd.print(" F ");
+  
+  delay(1000);
+  lcd.clear(); // clears the temperature reading to show other readings
     
   //print out level sensor reading
   if(lowLevel == 1 && highLevel == 0)
@@ -77,7 +81,6 @@ void loop() {
   else
     lcd.print("Level not okay");
 
- 
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
