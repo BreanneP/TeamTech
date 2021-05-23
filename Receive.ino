@@ -20,8 +20,8 @@ const int yellowLED = 13;
 const int redLED = 9;
 const int blueLED = 7;
 
-//limits for the temperature in celcius
-const int highTemp = 50;
+//limits for the temperature in fahrenheit
+const int highTemp = 80;
 const int lowTemp = -25;
 
 void setup() {
