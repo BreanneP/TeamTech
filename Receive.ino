@@ -73,10 +73,10 @@ void loop() {
   delay(1000);
     
   //print out level sensor reading
-//   if(lowLevel == 1 && highLevel == 0)
-//     lcd.print("Level okay");
-//   else
-//     lcd.print("Level not okay");
+  if(!isDryBottom && isDryTop)
+    lcd.print("Level okay");
+  else
+    lcd.print("Level not okay");
 
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
