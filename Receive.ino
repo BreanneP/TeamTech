@@ -16,9 +16,9 @@ MCP2515 mcp2515(10);
 const int tempPin = A1;
 const int levelTop = 8;
 const int levelBottom = 10;
-const int yellowLED = 13;
-const int redLED = 9;
-const int blueLED = 7;
+const int yellowLED = 13; //led for the bottom level sensor
+const int redLED = 9; //led for the top level sensor
+const int blueLED = 7; //led for the temperature sensor
 
 //limits for the temperature in fahrenheit
 const int highTemp = 80;
