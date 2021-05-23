@@ -58,7 +58,7 @@ void loop() {
   int lowLevel = digitalRead(levelSensor1);
   int highLevel = digitalRead(levelSensor2);
 
-  Serial.print("Low level value ");
+  Serial.print("Low level value "); // I have a question about this portion of code --> there is no sp. output value for the level sensor what is printing then? 
   Serial.print(lowLevel);
   Serial.print("\n");
 
