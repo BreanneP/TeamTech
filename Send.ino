@@ -17,6 +17,7 @@ void setup() {
   mcp2515.setNormalMode();
 
   canMsg1.can_id  = 0xAA;
+  canMsg1.data = {1, 2, 3, 4, 5, 6, 7, 8};
   canMsg1.can_dlc = 8;
 
   canMsg2.can_id  = 0xBB;
