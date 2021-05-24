@@ -86,8 +86,15 @@ void loop() {
   else
     lcd.print("Level not okay");
   
+  Serial.print("Can message");
+  for(int i = 0; i < 8; i++) {
+    Serial.print(canMsg1.data[i]);
+  }
+  Serial.print("\n");
+  
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
+    Serial.print("message received");
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
      int vValue1 = canMsg1.data[0];
      int vValue2 = canMsg1.data[1];
