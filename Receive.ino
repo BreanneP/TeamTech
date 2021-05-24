@@ -92,10 +92,10 @@ void loop() {
      float viscosity = vValue * 0.015625;
       
      int dValue = ((int16_t)canMsg1.data[3] << 8) | canMsg1.data[2];
-     float density = dValue * 0.015625;
+     float density = dValue * 0.00003052;
 
      int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
-     float dielectric = dcValue * 0.015625;
+     float dielectric = dcValue * 0.00012207;
      delay(200);
     }
   }
