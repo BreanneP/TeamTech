@@ -50,9 +50,7 @@ void loop() {
   float voltage = (tempValue / 1024.0 ) * 5.0;
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
-  
-  lcd.autoscroll();
-  
+    
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
     digitalWrite(blueLED, HIGH);
@@ -88,8 +86,6 @@ void loop() {
   else
     lcd.print("Level not okay");
   
-  lcd.noAutoscroll();
-
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
