@@ -99,10 +99,10 @@ void loop() {
      delay(200);
     }
     else
-       serial.print("Reading not ok_1");
+       Serial.print("Reading not ok_1");
   }
    else
-       serial.print("Reading not ok_2");
+       Serial.print("Reading not ok_2");
 
 //   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
 //     if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
