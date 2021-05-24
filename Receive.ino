@@ -91,10 +91,13 @@ void loop() {
   lcd.noAutoscroll();
 
   //read the CAN messages 
-//   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
-//     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-//      int vValue1 = canMsg1.data[0];
-//      int vValue2 = canMsg1.data[1];
+  if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
+    if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
+     int vValue1 = canMsg1.data[0];
+     int vValue2 = canMsg1.data[1];
+     Serial.print(vValue1);
+     Serial.print("\n");
+     
 //      int dValue = canMsg1.data[2..3];
 //      int dcValue = canMsg2.data[6..7];
 
@@ -105,9 +108,9 @@ void loop() {
 //      lcd.setCursor(16, 0);
 //      lcd.print("Viscosity: ");
 //      lcd.print(viscosity);
-//      delay(200);
-//     }
-//   }
+     delay(200);
+    }
+  }
 
 //   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
 //     if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
