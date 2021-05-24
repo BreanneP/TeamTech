@@ -98,8 +98,10 @@ void loop() {
      float dielectric = dcValue * 0.00012207;
      delay(200);
      else
-       serial.print("Reading not ok");
+       serial.print("Reading not ok_1");
     }
+    else
+       serial.print("Reading not ok_2");
   }
 
 //   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
