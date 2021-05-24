@@ -97,8 +97,6 @@ void loop() {
      int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
      float dielectric = dcValue * 0.00012207;
      delay(200);
-     else
-       serial.print("Reading not ok_1");
     }
     else
        serial.print("Reading not ok_2");
