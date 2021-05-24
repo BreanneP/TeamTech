@@ -38,7 +38,6 @@ void setup() {
   mcp2515.reset();
   mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
   mcp2515.setNormalMode();
-
 }
 
   
@@ -85,32 +84,18 @@ void loop() {
     lcd.print("Level okay");
   else
     lcd.print("Level not okay");
-  
-  Serial.print("Can message");
-  for(int i = 0; i < 8; i++) {
-    Serial.print(canMsg1.data[i]);
-  }
-  Serial.print("\n");
-  
+ 
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
-    Serial.print("message received");
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-     int vValue1 = canMsg1.data[0];
-     int vValue2 = canMsg1.data[1];
-     Serial.print(vValue1);
-     Serial.print("\n");
-     
-//      int dValue = canMsg1.data[2..3];
-//      int dcValue = canMsg2.data[6..7];
+     int vValue = ((int16_t)canMsg1.data[1] << 8) | canMsg1.data[0];
+     float viscosity = vValue * 0.015625;
+      
+     int dValue = ((int16_t)canMsg1.data[3] << 8) | canMsg1.data[2];
+     float density = dValue * 0.015625;
 
-//      float viscosity = vValue * 0.015625;
-//      float density = dValue * 0.00003052;
-//      float dielectric = dcValue * 0.00012207;
-     
-//      lcd.setCursor(16, 0);
-//      lcd.print("Viscosity: ");
-//      lcd.print(viscosity);
+     int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
+     float dielectric = dcValue * 0.015625;
      delay(200);
     }
   }
