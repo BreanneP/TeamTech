@@ -1,5 +1,6 @@
 #include <can.h>
 #include <mcp2515.h>
+#include <SPI.h>
 
 //set up the data structure for sending the data
 struct can_frame canMsg1;
@@ -13,11 +14,12 @@ void setup() {
   Serial.begin(9600);
 
   mcp2515.reset();
-  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
+  mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
   mcp2515.setNormalMode();
 
   canMsg1.can_id  = 0xAA;
-  canMsg1.data = {1, 2, 3, 4, 5, 6, 7, 8};
+  for(int i = 0; i < 8; i++)
+    canMsg1.data[i] = i + 1;
   canMsg1.can_dlc = 8;
 
   canMsg2.can_id  = 0xBB;
