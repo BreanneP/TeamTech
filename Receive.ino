@@ -1,6 +1,7 @@
 #include <can.h>
 #include <mcp2515.h>
 #include <LiquidCrystal.h>
+#include <SPI.h>
 
 LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
 
@@ -36,7 +37,7 @@ void setup() {
   digitalWrite(yellowLED, LOW);
 
   mcp2515.reset();
-  mcp2515.setBitrate(CAN_500KBPS, MCP_8MHZ); //sets CAN at speed 500KBPS
+  mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
   mcp2515.setNormalMode();
 }
 
@@ -87,22 +88,34 @@ void loop() {
  
   //read the CAN messages 
   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
+    Serial.print(canMsg1.can_id, HEX);
+    Serial.print("");
+    Serial.print(canMsg1.can_dlc, HEX);
+    Serial.print("");
+    
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-     int vValue = ((int16_t)canMsg1.data[1] << 8) | canMsg1.data[0];
-     float viscosity = vValue * 0.015625;
+      for(int i = 0, i < canMsg.can_dlc, i++) {
+        Serial.print(canMsg.data[i], HEX);
+        Serial.print("");
+      }
       
-     int dValue = ((int16_t)canMsg1.data[3] << 8) | canMsg1.data[2];
-     float density = dValue * 0.00003052;
+//      int vValue = ((int16_t)canMsg1.data[1] << 8) | canMsg1.data[0];
+//      float viscosity = vValue * 0.015625;
+      
+//      int dValue = ((int16_t)canMsg1.data[3] << 8) | canMsg1.data[2];
+//      float density = dValue * 0.00003052;
 
-     int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
-     float dielectric = dcValue * 0.00012207;
-     delay(200);
+//      int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
+//      float dielectric = dcValue * 0.00012207;
+//      delay(200);
+      Serial.print("It reads CAN Message 1");
+      delay(200);
     }
     else
-       Serial.print("Reading not ok_1");
+       Serial.print("It reads a CAN Message");
   }
    else
-       Serial.print("Reading not ok_2");
+       Serial.print("Not reading any CAN messages");
 
 //   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
 //     if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
