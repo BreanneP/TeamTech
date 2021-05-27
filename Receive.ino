@@ -94,8 +94,8 @@ void loop() {
     Serial.print("");
     
     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-      for(int i = 0, i < canMsg.can_dlc, i++) {
-        Serial.print(canMsg.data[i], HEX);
+      for(int i = 0; i < canMsg1.can_dlc; i++) {
+        Serial.print(canMsg1.data[i], HEX);
         Serial.print("");
       }
       
