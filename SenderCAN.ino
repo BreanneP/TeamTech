@@ -5,6 +5,7 @@ mcp2515_can CAN(10); // Set CS pin
  
 void setup() {
     Serial.begin(9600);
+    SPI.begin();
     while(!Serial){};
  
     while (CAN_OK != CAN.begin(CAN_500KBPS)) {             // init can bus : baudrate = 500k
