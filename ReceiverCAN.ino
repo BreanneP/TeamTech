@@ -9,6 +9,7 @@ unsigned int canID;
 
 void setup() {
   Serial.begin(9600);   //to communicate with Serial monitor
+  SPI.begin();
   
 //tries to initialize, if failed --> it will loop here for ever
 START_INIT:
