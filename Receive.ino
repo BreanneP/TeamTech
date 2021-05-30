@@ -1,17 +1,17 @@
-#include <can.h>
-#include <mcp2515.h>
+// #include <can.h>
+// #include <mcp2515.h>
+// #include <SPI.h>
 #include <LiquidCrystal.h>
-#include <SPI.h>
 
 LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
 
 //set up the data structure for reading the data
-struct can_frame canMsg1;
-struct can_frame canMsg2;
-struct can_frame canMsg3;
+// struct can_frame canMsg1;
+// struct can_frame canMsg2;
+// struct can_frame canMsg3;
 
 //create an instance of MCP2515 class
-MCP2515 mcp2515(10);
+// MCP2515 mcp2515(10);
 
 //initialize the pins
 const int tempPin = A1;
@@ -36,9 +36,9 @@ void setup() {
   pinMode(yellowLED, OUTPUT);
   digitalWrite(yellowLED, LOW);
 
-  mcp2515.reset();
-  mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
-  mcp2515.setNormalMode();
+//   mcp2515.reset();
+//   mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
+//   mcp2515.setNormalMode();
 }
 
   
@@ -87,17 +87,17 @@ void loop() {
     lcd.print("Level not okay");
  
   //read the CAN messages 
-  if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
-    Serial.print(canMsg1.can_id, HEX);
-    Serial.print("");
-    Serial.print(canMsg1.can_dlc, HEX);
-    Serial.print("");
+//   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
+//     Serial.print(canMsg1.can_id, HEX);
+//     Serial.print("");
+//     Serial.print(canMsg1.can_dlc, HEX);
+//     Serial.print("");
     
-    if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-      for(int i = 0; i < canMsg1.can_dlc; i++) {
-        Serial.print(canMsg1.data[i], HEX);
-        Serial.print("");
-      }
+//     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
+//       for(int i = 0; i < canMsg1.can_dlc; i++) {
+//         Serial.print(canMsg1.data[i], HEX);
+//         Serial.print("");
+//       }
       
 //      int vValue = ((int16_t)canMsg1.data[1] << 8) | canMsg1.data[0];
 //      float viscosity = vValue * 0.015625;
@@ -108,28 +108,14 @@ void loop() {
 //      int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
 //      float dielectric = dcValue * 0.00012207;
 //      delay(200);
-      Serial.print("It reads CAN Message 1");
-      delay(200);
-    }
-    else
-       Serial.print("It reads a CAN Message");
-  }
-   else
-       Serial.print("Not reading any CAN messages");
-
-//   if (mcp2515.readMessage(&canMsg2) == MCP2515::ERROR_OK) {
-//     if(canMsg2.can_id==0xBB) { //read the temperature sensor CAN message
-//      int tValue = canMsg1.data[4..5];
-//      int temp = tValue[2..3];
-
-//      float celsius = (0.3125 * temp) - 273;
-//      float fahrenheit = ((celsius * 9.0) / 5.0 ) + 32.0 ;  
-     
-//      lcd.print("Temperature: ");
-//      lcd.print(fahrenheit);
-//      delay(200);
+//       Serial.print("It reads CAN Message 1");
+//       delay(200);
 //     }
+//     else
+//        Serial.print("It reads a CAN Message");
 //   }
+//    else
+//        Serial.print("Not reading any CAN messages");
   
   delay(1000);
 }
