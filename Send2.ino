@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <mcp_can.h>
 #include <SPI.h>
+#include <mcp2515_can.h>
 
 const int SPI_CS_PIN = 10;
-MCP_CAN CAN(SPI_CS_PIN);
+mcp2515_can CAN(SPI_CS_PIN);
 
 void setup() {
   Serial.begin(115200);
