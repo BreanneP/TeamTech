@@ -7,7 +7,7 @@ const int SPI_CS_PIN = 10;
 mcp2515_can CAN(SPI_CS_PIN);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   
   while (CAN_OK != CAN.begin(CAN_500KBPS)) { // baudrate 500kbps
       Serial.println("CAN BUS Shield init fail");
