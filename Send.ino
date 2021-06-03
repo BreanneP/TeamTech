@@ -10,7 +10,6 @@
   const int CAN_INT_PIN = 2;
 #endif
 
-
 #ifdef CAN_2518FD
   #include "mcp2518fd_can.h"
   mcp2518fd CAN(SPI_CS_PIN); // Set CS pin
@@ -21,6 +20,7 @@
   mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
 #endif
 
+//set up code here runs once
 void setup() {
     SERIAL_PORT_MONITOR.begin(115200);
     while(!Serial){};
@@ -33,7 +33,10 @@ void setup() {
     SERIAL_PORT_MONITOR.println("CAN init ok!");
 }
 
+//set up CAN message
 unsigned char stmp[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+//main code that runs repeatedly
 void loop() {
     // send data:  id = 0x00, standrad frame, data len = 8, stmp: data buf
     stmp[7] = stmp[7] + 1;
@@ -48,6 +51,6 @@ void loop() {
     }
 
     CAN.sendMsgBuf(0x00, 0, 8, stmp);
-    delay(100);                       // send data per 100ms
+    delay(100);    // send data per 100ms
     SERIAL_PORT_MONITOR.println("CAN BUS sendMsgBuf ok!");
 }
