@@ -1,17 +1,8 @@
-// #include <can.h>
-// #include <mcp2515.h>
-// #include <SPI.h>
+#include <SPI.h>
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
-
-//set up the data structure for reading the data
-// struct can_frame canMsg1;
-// struct can_frame canMsg2;
-// struct can_frame canMsg3;
-
-//create an instance of MCP2515 class
-// MCP2515 mcp2515(10);
+define CAN_2515
 
 //initialize the pins
 const int tempPin = A1;
@@ -25,9 +16,52 @@ const int blueLED = 7; //led for the temperature sensor
 const int highTemp = 80;
 const int lowTemp = -25;
 
+#if defined(SEEED_WIO_TERMINAL) && defined(CAN_2518FD)
+// For Wio Terminal w/ MCP2518FD RPi Hat：
+// Channel 0 SPI_CS Pin: BCM 8
+// Channel 1 SPI_CS Pin: BCM 7
+// Interupt Pin: BCM25
+const int SPI_CS_PIN  = BCM8;
+const int CAN_INT_PIN = BCM25;
+
+#else
+// For Arduino MCP2515 Hat:
+// the cs pin of the version after v1.1 is default to D9
+// v0.9b and v1.0 is default D10
+const int SPI_CS_PIN = 9;
+const int CAN_INT_PIN = 2;
+#endif
+
+#ifdef CAN_2518FD
+#include "mcp2518fd_can.h"
+mcp2518fd CAN(SPI_CS_PIN); // Set CS pin
+
+#define MAX_DATA_SIZE 8
+
+#endif
+
+#ifdef CAN_2515
+#include "mcp2515_can.h"
+mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
+#define MAX_DATA_SIZE 8
+#endif
+
 void setup() {
-  Serial.begin(9600);
+  SERIAL_PORT_MONITOR.begin(115200);
   lcd.begin(16, 2);
+  
+  while(!SERIAL_PORT_MONITOR) {}
+  
+  #if MAX_DATA_SIZE > 8
+    CAN.setMode(CAN_NORMAL_MODE);
+  #endif
+
+  while (CAN_OK != CAN.begin(CAN_500KBPS)) {  // init can bus : baudrate = 500k
+     SERIAL_PORT_MONITOR.println(F("CAN init fail, retry..."));
+     delay(100);
+  }
+  
+  SERIAL_PORT_MONITOR.println(F("CAN init ok!"));
     
   pinMode(levelTop, INPUT);
   pinMode(redLED, OUTPUT);
@@ -36,13 +70,51 @@ void setup() {
   pinMode(yellowLED, OUTPUT);
   digitalWrite(yellowLED, LOW);
 
-//   mcp2515.reset();
-//   mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
-//   mcp2515.setNormalMode();
 }
 
+uint32_t id;
+uint8_t  type; // bit0: ext, bit1: rtr
+uint8_t  len;
+byte cdata[MAX_DATA_SIZE] = {0};
   
 void loop() {
+    //check if data coming
+    if (CAN_MSGAVAIL != CAN.checkReceive())
+        return;
+
+    char prbuf[32 + MAX_DATA_SIZE * 3];
+    int i, n;
+
+    unsigned long t = millis();
+    // read data, len: data length, buf: data buf
+    CAN.readMsgBuf(&len, cdata);
+
+    id = CAN.getCanId();
+    type = (CAN.isExtendedFrame() << 0) |
+           (CAN.isRemoteRequest() << 1);
+    /*
+     * MCP2515(or this driver) could not handle properly
+     * the data carried by remote frame
+     */
+
+    n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
+    /* Displayed type:
+     *
+     * 0x00: standard data frame
+     * 0x02: extended data frame
+     * 0x30: standard remote frame
+     * 0x32: extended remote frame
+     */
+    static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
+    n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
+    // n += sprintf(prbuf, "RX: [%08lX](%02X) ", id, type);
+
+    for (i = 0; i < len; i++)
+        n += sprintf(prbuf + n, "%02X ", cdata[i]);
+    
+    SERIAL_PORT_MONITOR.println(prbuf);
+  
+  
   //read the temperature value
   float tempValue = analogRead(tempPin);
   
@@ -85,37 +157,6 @@ void loop() {
     lcd.print("Level okay");
   else
     lcd.print("Level not okay");
- 
-  //read the CAN messages 
-//   if (mcp2515.readMessage(&canMsg1) == MCP2515::ERROR_OK) {
-//     Serial.print(canMsg1.can_id, HEX);
-//     Serial.print("");
-//     Serial.print(canMsg1.can_dlc, HEX);
-//     Serial.print("");
-    
-//     if(canMsg1.can_id==0xAA) { //read the property sensor CAN message
-//       for(int i = 0; i < canMsg1.can_dlc; i++) {
-//         Serial.print(canMsg1.data[i], HEX);
-//         Serial.print("");
-//       }
-      
-//      int vValue = ((int16_t)canMsg1.data[1] << 8) | canMsg1.data[0];
-//      float viscosity = vValue * 0.015625;
-      
-//      int dValue = ((int16_t)canMsg1.data[3] << 8) | canMsg1.data[2];
-//      float density = dValue * 0.00003052;
-
-//      int dcValue = ((int16_t)canMsg1.data[7] << 8) | canMsg1.data[6];
-//      float dielectric = dcValue * 0.00012207;
-//      delay(200);
-//       Serial.print("It reads CAN Message 1");
-//       delay(200);
-//     }
-//     else
-//        Serial.print("It reads a CAN Message");
-//   }
-//    else
-//        Serial.print("Not reading any CAN messages");
   
   delay(1000);
 }
