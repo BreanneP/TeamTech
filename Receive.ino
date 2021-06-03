@@ -1,8 +1,8 @@
 #include <SPI.h>
 #include <LiquidCrystal.h>
+#define CAN_2515
 
 LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
-#define CAN_2515
 
 //initialize the pins
 const int tempPin = A1;
@@ -16,36 +16,28 @@ const int blueLED = 7; //led for the temperature sensor
 const int highTemp = 80;
 const int lowTemp = -25;
 
+//set SPI CS Pin according to your hardware
 #if defined(SEEED_WIO_TERMINAL) && defined(CAN_2518FD)
-// For Wio Terminal w/ MCP2518FD RPi Hat：
-// Channel 0 SPI_CS Pin: BCM 8
-// Channel 1 SPI_CS Pin: BCM 7
-// Interupt Pin: BCM25
-const int SPI_CS_PIN  = BCM8;
-const int CAN_INT_PIN = BCM25;
-
+  const int SPI_CS_PIN  = BCM8;
+  const int CAN_INT_PIN = BCM25;
 #else
-// For Arduino MCP2515 Hat:
-// the cs pin of the version after v1.1 is default to D9
-// v0.9b and v1.0 is default D10
-const int SPI_CS_PIN = 9;
-const int CAN_INT_PIN = 2;
+  const int SPI_CS_PIN = 9;
+  const int CAN_INT_PIN = 2;
 #endif
 
 #ifdef CAN_2518FD
-#include "mcp2518fd_can.h"
-mcp2518fd CAN(SPI_CS_PIN); // Set CS pin
-
-#define MAX_DATA_SIZE 8
-
+  #include "mcp2518fd_can.h"
+  mcp2518fd CAN(SPI_CS_PIN); // Set CS pin
+  #define MAX_DATA_SIZE 8
 #endif
 
 #ifdef CAN_2515
-#include "mcp2515_can.h"
-mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
-#define MAX_DATA_SIZE 8
+  #include "mcp2515_can.h"
+  mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
+  #define MAX_DATA_SIZE 8
 #endif
 
+//set up code here runs once
 void setup() {
   SERIAL_PORT_MONITOR.begin(115200);
   lcd.begin(16, 2);
@@ -69,14 +61,15 @@ void setup() {
   pinMode(levelBottom, INPUT);
   pinMode(yellowLED, OUTPUT);
   digitalWrite(yellowLED, LOW);
-
 }
 
+//set up CAN message to be read
 uint32_t id;
 uint8_t  type; // bit0: ext, bit1: rtr
 uint8_t  len;
 byte cdata[MAX_DATA_SIZE] = {0};
   
+//main code that runs repeatedly
 void loop() {
     //check if data coming
     if (CAN_MSGAVAIL != CAN.checkReceive())
@@ -84,30 +77,19 @@ void loop() {
 
     char prbuf[32 + MAX_DATA_SIZE * 3];
     int i, n;
-
     unsigned long t = millis();
+  
     // read data, len: data length, buf: data buf
     CAN.readMsgBuf(&len, cdata);
 
+    //get ID and type of CAN message
     id = CAN.getCanId();
     type = (CAN.isExtendedFrame() << 0) |
            (CAN.isRemoteRequest() << 1);
-    /*
-     * MCP2515(or this driver) could not handle properly
-     * the data carried by remote frame
-     */
 
     n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
-    /* Displayed type:
-     *
-     * 0x00: standard data frame
-     * 0x02: extended data frame
-     * 0x30: standard remote frame
-     * 0x32: extended remote frame
-     */
     static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
     n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
-    // n += sprintf(prbuf, "RX: [%08lX](%02X) ", id, type);
 
     for (i = 0; i < len; i++)
         n += sprintf(prbuf + n, "%02X ", cdata[i]);
