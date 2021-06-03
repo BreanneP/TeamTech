@@ -2,7 +2,7 @@
 #include <LiquidCrystal.h>
 
 LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
-define CAN_2515
+#define CAN_2515
 
 //initialize the pins
 const int tempPin = A1;
