@@ -71,29 +71,44 @@ byte cdata[MAX_DATA_SIZE] = {0};
   
 //main code that runs repeatedly
 void loop() {
-    //check if data coming
-    if (CAN_MSGAVAIL != CAN.checkReceive())
-        return;
+  //check if data coming
+  if (CAN_MSGAVAIL != CAN.checkReceive())
+      return;
 
-    char prbuf[32 + MAX_DATA_SIZE * 3];
-    unsigned long t = millis();
+  char prbuf[32 + MAX_DATA_SIZE * 3];
+  unsigned long t = millis();
   
-    // read data, len: data length, buf: data buf
-    CAN.readMsgBuf(&len, cdata);
+  // read data, len: data length, buf: data buf
+  CAN.readMsgBuf(&len, cdata);
 
-    //get ID and type of CAN message
-    id = CAN.getCanId();
-    type = (CAN.isExtendedFrame() << 0) |
-           (CAN.isRemoteRequest() << 1);
+  //get ID and type of CAN message
+  id = CAN.getCanId();
+  type = (CAN.isExtendedFrame() << 0) |
+         (CAN.isRemoteRequest() << 1);
 
-    int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
-    static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
-    n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
+  int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
+  static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
+  n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
 
-    for (int i = 0; i < len; i++)
-        n += sprintf(prbuf + n, "%02X ", cdata[i]);
+  for (int i = 0; i < len; i++)
+      n += sprintf(prbuf + n, "%02X ", cdata[i]);
     
-    SERIAL_PORT_MONITOR.println(prbuf);
+  SERIAL_PORT_MONITOR.println(prbuf);
+  
+//   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
+//   float viscosity = vValue * 0.015625;
+//   SERIAL_PORT_MONITOR.println("Visocity is ");
+//   SERIAL_PORT_MONITOR.println(viscosity);
+  
+//   int dValue = ((int16_t)cdata[3] << 8) | cdata[2];
+//   float density = dValue * 0.00003052;
+//   SERIAL_PORT_MONITOR.println("Density is ");
+//   SERIAL_PORT_MONITOR.println(density);
+
+//   int dcValue = ((int16_t)cdata[7] << 8) | cdata[6];
+//   float dielectric = dcValue * 0.00012207;
+//   SERIAL_PORT_MONITOR.println("Dielectric constant is ");
+//   SERIAL_PORT_MONITOR.println(dielectric);
   
   
   //read the temperature value
