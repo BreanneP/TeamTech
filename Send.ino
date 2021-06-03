@@ -1,41 +1,53 @@
-#include <can.h>
-#include <mcp2515.h>
 #include <SPI.h>
+#define CAN_2515
 
-//set up the data structure for sending the data
-struct can_frame canMsg1;
-struct can_frame canMsg2;
-struct can_frame canMsg3;
+// Set SPI CS Pin according to your hardware
+#if defined(SEEED_WIO_TERMINAL) && defined(CAN_2518FD)
+  const int SPI_CS_PIN  = BCM8;
+  const int CAN_INT_PIN = BCM25;
+#else
+  const int SPI_CS_PIN = 9;
+  const int CAN_INT_PIN = 2;
+#endif
 
-//create an instance of MCP2515 class
-MCP2515 mcp2515(10);
+
+#ifdef CAN_2518FD
+  #include "mcp2518fd_can.h"
+  mcp2518fd CAN(SPI_CS_PIN); // Set CS pin
+#endif
+
+#ifdef CAN_2515
+  #include "mcp2515_can.h"
+  mcp2515_can CAN(SPI_CS_PIN); // Set CS pin
+#endif
 
 void setup() {
-  Serial.begin(9600);
+    SERIAL_PORT_MONITOR.begin(115200);
+    while(!Serial){};
 
-  mcp2515.reset();
-  mcp2515.setBitrate(CAN_500KBPS); //sets CAN at speed 500KBPS
-  mcp2515.setNormalMode();
-
-  canMsg1.can_id  = 0xAA;
-  for(int i = 0; i < 8; i++)
-    canMsg1.data[i] = i + 1;
-  canMsg1.can_dlc = 8;
-
-  canMsg2.can_id  = 0xBB;
-  canMsg2.can_dlc = 8;               
-
-  canMsg3.can_id  = 0xCC;
-  canMsg3.can_dlc = 8;
-
+    while (CAN_OK != CAN.begin(CAN_500KBPS)) {   // init can bus : baudrate = 500k
+        SERIAL_PORT_MONITOR.println("CAN init fail, retry...");
+        delay(100);
+    }
+  
+    SERIAL_PORT_MONITOR.println("CAN init ok!");
 }
 
+unsigned char stmp[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 void loop() {
-  //send the message
-  mcp2515.sendMessage(&canMsg1);
-  mcp2515.sendMessage(&canMsg2);
-  mcp2515.sendMessage(&canMsg3);
-    
-  delay(200);
+    // send data:  id = 0x00, standrad frame, data len = 8, stmp: data buf
+    stmp[7] = stmp[7] + 1;
+    if (stmp[7] == 100) {
+        stmp[7] = 0;
+        stmp[6] = stmp[6] + 1;
 
+        if (stmp[6] == 100) {
+            stmp[6] = 0;
+            stmp[5] = stmp[5] + 1;
+        }
+    }
+
+    CAN.sendMsgBuf(0x00, 0, 8, stmp);
+    delay(100);                       // send data per 100ms
+    SERIAL_PORT_MONITOR.println("CAN BUS sendMsgBuf ok!");
 }
