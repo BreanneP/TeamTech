@@ -76,7 +76,6 @@ void loop() {
         return;
 
     char prbuf[32 + MAX_DATA_SIZE * 3];
-    int i, n;
     unsigned long t = millis();
   
     // read data, len: data length, buf: data buf
@@ -87,11 +86,11 @@ void loop() {
     type = (CAN.isExtendedFrame() << 0) |
            (CAN.isRemoteRequest() << 1);
 
-    n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
+    int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
     static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
     n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
 
-    for (i = 0; i < len; i++)
+    for (int i = 0; i < len; i++)
         n += sprintf(prbuf + n, "%02X ", cdata[i]);
     
     SERIAL_PORT_MONITOR.println(prbuf);
