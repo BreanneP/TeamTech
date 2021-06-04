@@ -93,6 +93,7 @@ void loop() {
       n += sprintf(prbuf + n, "%02X ", cdata[i]);
     
   SERIAL_PORT_MONITOR.println(prbuf);
+  delay(100);
   
 //   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
 //   float viscosity = vValue * 0.015625;
@@ -118,6 +119,15 @@ void loop() {
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
     
+  SERIAL_PORT_MONITOR.print("Temperature is ");
+  SERIAL_PORT_MONITOR.print(tempF);
+  
+  SERIAL_PORT_MONITOR.print("Level top is ");
+  SERIAL_PORT_MONITOR.print(isDryTop);
+  
+  SERIAL_PORT_MONITOR.print("Level bottom is ");
+  SERIAL_PORT_MONITOR.print(isDryBottom);
+  
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
     digitalWrite(blueLED, HIGH);
