@@ -9,7 +9,7 @@ const int tempPin = A1;
 const int levelTop = 8;
 const int levelBottom = 6;
 const int yellowLED = 13; //led for the bottom level sensor
-const int redLED = 9; //led for the top level sensor
+const int redLED = 10; //led for the top level sensor
 const int blueLED = 7; //led for the temperature sensor
 
 //limits for the temperature in fahrenheit
