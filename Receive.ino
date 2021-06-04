@@ -48,7 +48,7 @@ void setup() {
     CAN.setMode(CAN_NORMAL_MODE);
   #endif
 
-  while (CAN_OK != CAN.begin(CAN_500KBPS)) {  // init can bus : baudrate = 500k
+  while (CAN_OK != CAN.begin(CAN_250KBPS)) {  // init can bus : baudrate = 500k
      SERIAL_PORT_MONITOR.println(F("CAN init fail, retry..."));
      delay(100);
   }
@@ -78,6 +78,7 @@ void loop() {
   
   // read data, len: data length, buf: data buf
   CAN.readMsgBuf(&len, cdata);
+  SERIAL_PORT_MONITOR.print();
 
   //get ID and type of CAN message
   id = CAN.getCanId();
