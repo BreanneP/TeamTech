@@ -146,9 +146,9 @@ void loop() {
   //read the bottom level sensor
   int isDryBottom = digitalRead(levelBottom);
   if ( isDryBottom )
-    digitalWrite(yellowLED, HIGH);
+    analogWrite(yellowLED, 255);
   else
-    digitalWrite(yellowLED, LOW);
+    analogWrite(yellowLED, 255);
   
   
   SERIAL_PORT_MONITOR.print("Level top is ");
