@@ -4,10 +4,12 @@
 
 LiquidCrystal lcd(11, 12, 6, 5, 4, 3); // Arduino digital pins in interface of lcd
 
-//initialize the pins
+//initialize the sensors
 const int tempPin = A1;
 const int levelTop = 8;
 const int levelBottom = 13;
+
+//initialize the LEDs
 const int yellowLED = A0; //led for the bottom sensor
 const int redLED = 10; //led for the top sensor
 const int blueLED = 7; //led for the temperature sensor
@@ -66,13 +68,13 @@ uint32_t id;
 uint8_t  type; // bit0: ext, bit1: rtr
 uint8_t  len;
 byte cdata[MAX_DATA_SIZE] = {0};
-  
+
 //main code that runs repeatedly
 void loop() {
   //check if data coming
   if (CAN_MSGAVAIL != CAN.checkReceive())
       return;
-
+  
   char prbuf[32 + MAX_DATA_SIZE * 3];
   unsigned long t = millis();
   
@@ -105,7 +107,6 @@ void loop() {
   SERIAL_PORT_MONITOR.print(cdata[7]);
   SERIAL_PORT_MONITOR.print("\n");
 
-
   //get ID and type of CAN message
   id = CAN.getCanId();
   type = (CAN.isExtendedFrame() << 0) |
@@ -119,23 +120,26 @@ void loop() {
 //       n += sprintf(prbuf + n, "%02X ", cdata[i]);
     
 //   SERIAL_PORT_MONITOR.println(prbuf);
-  delay(100);
-  
-//   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
-//   float viscosity = vValue * 0.015625;
-//   SERIAL_PORT_MONITOR.println("Visocity is ");
-//   SERIAL_PORT_MONITOR.println(viscosity);
-  
-//   int dValue = ((int16_t)cdata[3] << 8) | cdata[2];
-//   float density = dValue * 0.00003052;
-//   SERIAL_PORT_MONITOR.println("Density is ");
-//   SERIAL_PORT_MONITOR.println(density);
 
-//   int dcValue = ((int16_t)cdata[7] << 8) | cdata[6];
-//   float dielectric = dcValue * 0.00012207;
-//   SERIAL_PORT_MONITOR.println("Dielectric constant is ");
-//   SERIAL_PORT_MONITOR.println(dielectric);
-  
+  //read the viscosity value
+  int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
+  float viscosity = vValue * 0.015625;
+  SERIAL_PORT_MONITOR.print("Visocity: ");
+  SERIAL_PORT_MONITOR.print(viscosity);
+
+  //read the density value
+  int dValue = ((int16_t)cdata[3] << 8) | cdata[2];
+  float density = dValue * 0.00003052;
+  SERIAL_PORT_MONITOR.print(", density: ");
+  SERIAL_PORT_MONITOR.print(density);
+
+  //read the dielectric constant value
+  int dcValue = ((int16_t)cdata[7] << 8) | cdata[6];
+  float dielectric = dcValue * 0.00012207;
+  SERIAL_PORT_MONITOR.print(", dielectric constant: ");
+  SERIAL_PORT_MONITOR.print(dielectric);
+
+  delay(100);
   
   //read the temperature value
   float tempValue = analogRead(tempPin);
@@ -144,8 +148,7 @@ void loop() {
   float voltage = (tempValue / 1024.0 ) * 5.0;
   float tempC = (voltage - 0.5) * 100; 
   float tempF = ((tempC * 9.0) / 5.0 ) + 32.0;
-    
-  SERIAL_PORT_MONITOR.print("Temperature is ");
+  SERIAL_PORT_MONITOR.print(", temperature: ");
   SERIAL_PORT_MONITOR.print(tempF);
   
   //reading if temp above/below threshold
@@ -177,18 +180,15 @@ void loop() {
   else
     analogWrite(yellowLED, 255);
   
-  
-  SERIAL_PORT_MONITOR.print("Level top is ");
-  SERIAL_PORT_MONITOR.print(isDryTop);
-  
-  SERIAL_PORT_MONITOR.print("Level bottom is ");
-  SERIAL_PORT_MONITOR.print(isDryBottom);
-  
   //print out level sensor reading
-  if(!isDryBottom && isDryTop)
+  if(!isDryBottom && isDryTop) {
     lcd.print("Level okay");
-  else
+    SERIAL_PORT_MONITOR.print(", level is okay");
+  }
+  else {
     lcd.print("Level not okay");
+    SERIAL_PORT_MONITOR.print(", level is not okay");
+  }
   
   delay(1000);
 }
