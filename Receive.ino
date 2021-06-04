@@ -58,7 +58,7 @@ void setup() {
   pinMode(redLED, OUTPUT);
   digitalWrite(redLED, LOW);
   pinMode(levelBottom, INPUT);
-  pinMode(yellowLED, OUTPUT);
+//   pinMode(yellowLED, OUTPUT);
   digitalWrite(yellowLED, LOW);
 }
 
