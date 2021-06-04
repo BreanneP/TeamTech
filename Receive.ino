@@ -78,21 +78,47 @@ void loop() {
   
   // read data, len: data length, buf: data buf
   CAN.readMsgBuf(&len, cdata);
-  SERIAL_PORT_MONITOR.print();
+  SERIAL_PORT_MONITOR.print(CAN.readMsgBuf(&len, cdata));
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("First Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[0]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Second Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[1]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Third Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[2]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Fourth Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[3]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Fifth Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[4]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Sixth Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[5]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Seventh Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[6]);
+  SERIAL_PORT_MONITOR.print("\n");
+  SERIAL_PORT_MONITOR.print("Eighth Index: ");
+  SERIAL_PORT_MONITOR.print(cdata[7]);
+  SERIAL_PORT_MONITOR.print("\n");
+
 
   //get ID and type of CAN message
   id = CAN.getCanId();
   type = (CAN.isExtendedFrame() << 0) |
          (CAN.isRemoteRequest() << 1);
 
-  int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
-  static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
-  n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
+//   int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
+//   static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
+//   n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
 
-  for (int i = 0; i < len; i++)
-      n += sprintf(prbuf + n, "%02X ", cdata[i]);
+//   for (int i = 0; i < len; i++)
+//       n += sprintf(prbuf + n, "%02X ", cdata[i]);
     
-  SERIAL_PORT_MONITOR.println(prbuf);
+//   SERIAL_PORT_MONITOR.println(prbuf);
   delay(100);
   
 //   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
