@@ -59,7 +59,7 @@ void setup() {
   digitalWrite(redLED, LOW);
   pinMode(levelBottom, INPUT);
 //   pinMode(yellowLED, OUTPUT);
-  digitalWrite(yellowLED, LOW);
+//   digitalWrite(yellowLED, LOW);
 }
 
 //set up CAN message to be read
