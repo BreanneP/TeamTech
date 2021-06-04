@@ -2,14 +2,13 @@
 #include <LiquidCrystal.h>
 #define CAN_2515
 
-LiquidCrystal lcd(11, 12, 5, 4, 3, 2); // Arduino digital pins in interface of lcd
+LiquidCrystal lcd(11, 12, 6, 5, 4, 3); // Arduino digital pins in interface of lcd
 
 //initialize the pins
 const int tempPin = A1;
 const int levelTop = 8;
-const int levelBottom = 6;
-const int yellowLED = 13; //led for the bottom level sensor
-const int redLED = 10; //led for the top level sensor
+const int levelBottom = 13;
+const int redLED = 10; //led for the level sensors
 const int blueLED = 7; //led for the temperature sensor
 
 //limits for the temperature in fahrenheit
@@ -144,9 +143,9 @@ void loop() {
   //read the bottom level sensor
   int isDryBottom = digitalRead(levelBottom);
   if ( isDryBottom )
-    digitalWrite(yellowLED, HIGH);
+    digitalWrite(redLED, HIGH);
   else
-    digitalWrite(yellowLED, LOW);
+    digitalWrite(redLED, LOW);
       
   //print out level sensor reading
   if(!isDryBottom && isDryTop)
