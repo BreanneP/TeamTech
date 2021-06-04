@@ -8,7 +8,8 @@ LiquidCrystal lcd(11, 12, 6, 5, 4, 3); // Arduino digital pins in interface of l
 const int tempPin = A1;
 const int levelTop = 8;
 const int levelBottom = 13;
-const int redLED = 10; //led for the level sensors
+const int yellowLED = A0; //led for the bottom sensor
+const int redLED = 10; //led for the top sensor
 const int blueLED = 7; //led for the temperature sensor
 
 //limits for the temperature in fahrenheit
@@ -58,8 +59,6 @@ void setup() {
   pinMode(redLED, OUTPUT);
   digitalWrite(redLED, LOW);
   pinMode(levelBottom, INPUT);
-//   pinMode(yellowLED, OUTPUT);
-//   digitalWrite(yellowLED, LOW);
 }
 
 //set up CAN message to be read
@@ -122,12 +121,6 @@ void loop() {
   SERIAL_PORT_MONITOR.print("Temperature is ");
   SERIAL_PORT_MONITOR.print(tempF);
   
-  SERIAL_PORT_MONITOR.print("Level top is ");
-  SERIAL_PORT_MONITOR.print(isDryTop);
-  
-  SERIAL_PORT_MONITOR.print("Level bottom is ");
-  SERIAL_PORT_MONITOR.print(isDryBottom);
-  
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
     digitalWrite(blueLED, HIGH);
@@ -153,10 +146,17 @@ void loop() {
   //read the bottom level sensor
   int isDryBottom = digitalRead(levelBottom);
   if ( isDryBottom )
-    digitalWrite(redLED, HIGH);
+    digitalWrite(yellowLED, HIGH);
   else
-    digitalWrite(redLED, LOW);
-      
+    digitalWrite(yellowLED, LOW);
+  
+  
+  SERIAL_PORT_MONITOR.print("Level top is ");
+  SERIAL_PORT_MONITOR.print(isDryTop);
+  
+  SERIAL_PORT_MONITOR.print("Level bottom is ");
+  SERIAL_PORT_MONITOR.print(isDryBottom);
+  
   //print out level sensor reading
   if(!isDryBottom && isDryTop)
     lcd.print("Level okay");
