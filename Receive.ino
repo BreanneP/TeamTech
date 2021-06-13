@@ -160,16 +160,16 @@ void loop() {
   //reading if temp above/below threshold
   if (tempF < lowTemp) { 
     digitalWrite(blueLED, HIGH);
-    lcd.print(" It's Cold.");
+    lcd.print(F(" It's Cold."));
   }
   else if (tempF > highTemp) { 
     digitalWrite(blueLED, HIGH);
-    lcd.print(" It's Hot.");
+    lcd.print(F(" It's Hot."));
   }
   else {
     lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
-    lcd.print(tempF);
-    lcd.print(" F ");
+    lcd.print(F(tempF));
+    lcd.print(F(" F "));
   }
 
   //read the top level sensor
@@ -192,7 +192,7 @@ void loop() {
     SERIAL_PORT_MONITOR.print(", level is okay");
   }
   else {
-    lcd.print("Level not okay");
+    lcd.print(F("Level not okay"));
     SERIAL_PORT_MONITOR.print(", level is not okay");
   }
   
