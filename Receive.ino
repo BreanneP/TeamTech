@@ -39,6 +39,12 @@ const int lowTemp = -25;
   #define MAX_DATA_SIZE 8
 #endif
 
+//set up CAN message to be read
+uint32_t id;
+uint8_t  type; // bit0: ext, bit1: rtr
+uint8_t  len;
+byte cdata[MAX_DATA_SIZE] = {0};
+
 //set up code here runs once
 void setup() {
   SERIAL_PORT_MONITOR.begin(115200);
@@ -50,24 +56,20 @@ void setup() {
     CAN.setMode(CAN_NORMAL_MODE);
   #endif
 
+  //check if CAN initialization is working
   while (CAN_OK != CAN.begin(CAN_250KBPS)) {  // init can bus : baudrate = 500k
      SERIAL_PORT_MONITOR.println(F("CAN init fail, retry..."));
      delay(100);
   }
   
   SERIAL_PORT_MONITOR.println(F("CAN init ok!"));
-    
+  
+  //defining LED and sensor communication
   pinMode(levelTop, INPUT);
   pinMode(redLED, OUTPUT);
   digitalWrite(redLED, LOW);
   pinMode(levelBottom, INPUT);
 }
-
-//set up CAN message to be read
-uint32_t id;
-uint8_t  type; // bit0: ext, bit1: rtr
-uint8_t  len;
-byte cdata[MAX_DATA_SIZE] = {0};
 
 //main code that runs repeatedly
 void loop() {
@@ -75,72 +77,23 @@ void loop() {
   if (CAN_MSGAVAIL != CAN.checkReceive())
       return;
   
-  char prbuf[32 + MAX_DATA_SIZE * 3];
-  unsigned long t = millis();
-  
   // read data, len: data length, buf: data buf
   CAN.readMsgBuf(&len, cdata);
-  SERIAL_PORT_MONITOR.print(CAN.readMsgBuf(&len, cdata));
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("First Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[0]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Second Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[1]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Third Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[2]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Fourth Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[3]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Fifth Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[4]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Sixth Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[5]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Seventh Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[6]);
-  SERIAL_PORT_MONITOR.print("\n");
-  SERIAL_PORT_MONITOR.print("Eighth Index: ");
-  SERIAL_PORT_MONITOR.print(cdata[7]);
-  SERIAL_PORT_MONITOR.print("\n");
-
-  //get ID and type of CAN message
-  id = CAN.getCanId();
-  type = (CAN.isExtendedFrame() << 0) |
-         (CAN.isRemoteRequest() << 1);
-
-//   int n = sprintf(prbuf, "%04lu.%03d ", t / 1000, int(t % 1000));
-//   static const byte type2[] = {0x00, 0x02, 0x30, 0x32};
-//   n += sprintf(prbuf + n, "RX: [%08lX](%02X) ", (unsigned long)id, type2[type]);
-
-//   for (int i = 0; i < len; i++)
-//       n += sprintf(prbuf + n, "%02X ", cdata[i]);
-    
-//   SERIAL_PORT_MONITOR.println(prbuf);
 
   //read the viscosity value
   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
-  SERIAL_PORT_MONITOR.print("Vvalue: ");
-  SERIAL_PORT_MONITOR.print(vValue);
   float viscosity = vValue * 0.015625;
   SERIAL_PORT_MONITOR.print("Visocity: ");
   SERIAL_PORT_MONITOR.print(viscosity);
 
   //read the density value
   int dValue = ((int16_t)cdata[3] << 8) | cdata[2];
-  SERIAL_PORT_MONITOR.print("Dvalue: ");
-  SERIAL_PORT_MONITOR.print(dValue);
   float density = dValue * 0.00003052;
   SERIAL_PORT_MONITOR.print(", density: ");
   SERIAL_PORT_MONITOR.print(density);
 
   //read the dielectric constant value
   int dcValue = ((int16_t)cdata[7] << 8) | cdata[6];
-  SERIAL_PORT_MONITOR.print("dcValue: ");
-  SERIAL_PORT_MONITOR.print(dcValue);
   float dielectric = dcValue * 0.00012207;
   SERIAL_PORT_MONITOR.print(", dielectric constant: ");
   SERIAL_PORT_MONITOR.print(dielectric);
