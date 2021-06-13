@@ -168,7 +168,7 @@ void loop() {
   }
   else {
     lcd.print("Temp: "); // printing the temperature from TMP36 in farenheit
-    lcd.print(F(tempF));
+    lcd.print(tempF);
     lcd.print(F(" F "));
   }
 
@@ -188,7 +188,7 @@ void loop() {
   
   //print out level sensor reading
   if(!isDryBottom && isDryTop) {
-    lcd.print("Level okay");
+    lcd.print(F("Level okay"));
     SERIAL_PORT_MONITOR.print(", level is okay");
   }
   else {
