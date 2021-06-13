@@ -123,18 +123,24 @@ void loop() {
 
   //read the viscosity value
   int vValue = ((int16_t)cdata[1] << 8) | cdata[0];
+  SERIAL_PORT_MONITOR.print("Vvalue: ");
+  SERIAL_PORT_MONITOR.print(vValue);
   float viscosity = vValue * 0.015625;
   SERIAL_PORT_MONITOR.print("Visocity: ");
   SERIAL_PORT_MONITOR.print(viscosity);
 
   //read the density value
   int dValue = ((int16_t)cdata[3] << 8) | cdata[2];
+  SERIAL_PORT_MONITOR.print("Dvalue: ");
+  SERIAL_PORT_MONITOR.print(dValue);
   float density = dValue * 0.00003052;
   SERIAL_PORT_MONITOR.print(", density: ");
   SERIAL_PORT_MONITOR.print(density);
 
   //read the dielectric constant value
   int dcValue = ((int16_t)cdata[7] << 8) | cdata[6];
+  SERIAL_PORT_MONITOR.print("dcValue: ");
+  SERIAL_PORT_MONITOR.print(dcValue);
   float dielectric = dcValue * 0.00012207;
   SERIAL_PORT_MONITOR.print(", dielectric constant: ");
   SERIAL_PORT_MONITOR.print(dielectric);
