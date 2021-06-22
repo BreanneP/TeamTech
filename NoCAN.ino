@@ -22,11 +22,11 @@ void setup() {
   SERIAL_PORT_MONITOR.begin(115200);
   lcd.begin(16, 2);
   
-//defining LED and sensor communication
- pinMode(levelTop, INPUT);
- pinMode(redLED, OUTPUT);
- digitalWrite(redLED, LOW);
- pinMode(levelBottom, INPUT);
+  //defining LED and sensor communication
+  pinMode(levelTop, INPUT);
+  pinMode(redLED, OUTPUT);
+  digitalWrite(redLED, LOW);
+  pinMode(levelBottom, INPUT);
 
 }
 
